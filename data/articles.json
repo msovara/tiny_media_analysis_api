@@ -1,0 +1,72 @@
+[
+  {
+    "id": "1",
+    "title": "National Election Turnout Reaches Record High",
+    "body": "Citizens across the country flocked to polling stations, showing unprecedented engagement in the democratic process. Long queues were reported in major cities, with some waiting for hours to cast their vote. The election commission has praised the peaceful conduct of the polls and is expected to release preliminary results tomorrow.",
+    "source": "The Guardian",
+    "date": "2024-05-15"
+  },
+  {
+    "id": "2",
+    "title": "New Malaria Vaccine Shows Promise in Clinical Trials",
+    "body": "A breakthrough in healthcare could save millions of lives annually. Researchers at the national hospital have developed a vaccine with a high efficacy rate against the most common malaria strains. This development is a significant step forward in the global fight against the disease, which disproportionately affects children in sub-Saharan Africa. Further trials are planned before a wider rollout.",
+    "source": "Nairobi News",
+    "date": "2024-05-20"
+  },
+  {
+    "id": "3",
+    "title": "City Council Faces Probe Over Tender Scandal",
+    "body": "Allegations of a massive corruption scheme have rocked the city council, prompting an official investigation. The probe focuses on irregularities in the awarding of public works tenders worth billions of shillings over the past three years. Opposition leaders are calling for the mayor to step down pending the outcome of the investigation.",
+    "source": "Reuters",
+    "date": "2024-06-01"
+  },
+  {
+    "id": "4",
+    "title": "Leaked Documents Allege Bribes in Recent Election",
+    "body": "A major corruption scandal is unfolding as leaked memos suggest that several candidates may have accepted illegal payments. These documents detail secret meetings and large cash transfers intended to influence the election outcome. The voter protection agency has called for an independent audit and for the implicated officials to be held accountable.",
+    "source": "The Guardian",
+    "date": "2024-06-05"
+  },
+  {
+    "id": "5",
+    "title": "Tech Firm Launches New Satellite for Rural Internet",
+    "body": "A giant leap for connectivity, a new low-earth orbit satellite network aims to provide high-speed internet to millions. This project targets remote and underserved areas that have been left behind by traditional infrastructure. The company says this will unlock new economic and educational opportunities for rural communities. The service is expected to go live by the end of the year.",
+    "source": "TechCrunch",
+    "date": "2024-06-07"
+  },
+  {
+    "id": "6",
+    "title": "Ministry Urges Public to Take Precautions Against Water-Borne Diseases",
+    "body": "With the rainy season approaching, healthcare officials are concerned about a potential rise in cholera and typhoid cases. Citizens are being advised to boil drinking water and maintain high standards of hygiene to prevent outbreaks. Local clinics have been stocked with necessary supplies to handle any potential increase in patient numbers.",
+    "source": "Nairobi News",
+    "date": "2024-05-28"
+  },
+  {
+    "id": "7",
+    "title": "Voter Registration Drive Extended by Two Weeks",
+    "body": "The national election commission announced an extension to the registration deadline following technical glitches and high demand. This move is intended to ensure maximum participation in the upcoming polls and uphold the integrity of the electoral process. Civil society groups have lauded the decision, which gives every eligible citizen a fair chance to register.",
+    "source": "Reuters",
+    "date": "2024-04-30"
+  },
+  {
+    "id": "8",
+    "title": "Local Hospital Receives Funding for New Wing",
+    "body": "A multi-million dollar grant will fund a new state-of-the-art pediatric wing at the city's main public hospital. The expansion will significantly improve patient care, doubling the number of beds and introducing modern diagnostic equipment. The hospital's director stated that this grant is a game-changer for child healthcare in the entire region.",
+    "source": "The Standard",
+    "date": "2024-06-10"
+  },
+  {
+    "id": "9",
+    "title": "Understanding the new Healthcare reforms",
+    "body": "The President signed the controversial bill today, which aims to overhaul the entire national medical system. Key provisions include the introduction of a mandatory public insurance scheme and regulation of private hospital fees. While proponents claim it will make healthcare more accessible, critics worry about the financial burden on taxpayers and the quality of care.",
+    "source": "The Guardian",
+    "date": "2024-06-11"
+  },
+  {
+    "id": "10",
+    "title": "Former Official Jailed for Corruption",
+    "body": "The high court delivered a landmark ruling today, sentencing a former minister to ten years in prison for accepting a bribe. The case involved a lucrative government contract that was awarded to an unqualified company in exchange for kickbacks. The judge called the sentence a 'stern warning' to all public servants who might be tempted by corruption.",
+    "source": "Reuters",
+    "date": "2024-06-12"
+  }
+] 
