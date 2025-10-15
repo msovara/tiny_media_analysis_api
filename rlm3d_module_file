@@ -1,0 +1,66 @@
+#%Module1.0
+##
+## RLM3D 3.3.2 module for Lengau Cluster
+##
+
+proc ModulesHelp { } {
+    puts stderr "This module loads RLM3D 3.3.2 (3D Ray Launching Method)."
+    puts stderr "Compiled with Intel Parallel Studio XE 2020u1"
+    puts stderr ""
+    puts stderr "Usage:"
+    puts stderr "  RLM3D_v3.3.2              # Run RLM3D"
+    puts stderr "  RLM3D_v3.3.2 -h           # Show help"
+    puts stderr ""
+    puts stderr "RLM3D Features:"
+    puts stderr "  - 3D Ray Launching Method for electromagnetic propagation"
+    puts stderr "  - High-frequency electromagnetic field calculations"
+    puts stderr "  - Complex 3D geometry support"
+    puts stderr "  - Parallel processing capabilities"
+    puts stderr "  - Intel compiler optimization"
+    puts stderr ""
+    puts stderr "Model Components:"
+    puts stderr "  - Ray launching algorithm"
+    puts stderr "  - 3D geometry processing"
+    puts stderr "  - Electromagnetic field calculations"
+    puts stderr "  - Reflection and diffraction modeling"
+    puts stderr "  - Parallel execution support"
+}
+
+module-whatis "Loads RLM3D 3.3.2 - 3D Ray Launching Method"
+
+# Load required modules
+module purge
+module load chpc/parallel_studio_xe/2020u1
+
+# Set RLM3D environment
+set rlm3d_root "/mnt/lustre/users/msovara/SoftwareBuilds/RLM3D"
+setenv RLM3D_ROOT $rlm3d_root
+setenv RLM3D_VERSION "3.3.2"
+setenv RLM3D_COMPILER "intel-2020u1"
+
+# Add to PATH
+prepend-path PATH ${rlm3d_root}/bin
+
+# Set library path for runtime
+prepend-path LD_LIBRARY_PATH ${rlm3d_root}/lib
+
+# Set include path for development
+prepend-path CPATH ${rlm3d_root}/include
+
+# Set OpenMP environment for parallel execution
+setenv OMP_NUM_THREADS 1
+setenv OMP_STACKSIZE 64M
+
+# Print status message
+puts stderr "RLM3D 3.3.2 loaded successfully"
+puts stderr "Installation: \$RLM3D_ROOT"
+puts stderr "Compiler: \$RLM3D_COMPILER"
+puts stderr "Executable: \$(which RLM3D_v3.3.2 2>/dev/null || echo 'RLM3D_v3.3.2 not found in PATH')"
+puts stderr ""
+puts stderr "To run RLM3D:"
+puts stderr "  RLM3D_v3.3.2              # Direct execution"
+puts stderr "  RLM3D_v3.3.2 -h           # Show help and options"
+puts stderr ""
+puts stderr "For parallel execution:"
+puts stderr "  export OMP_NUM_THREADS=4    # Set OpenMP threads"
+puts stderr "  RLM3D_v3.3.2 -np 8         # Parallel execution (if supported)"

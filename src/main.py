@@ -2,12 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
-from .api import router
+from .api import router as media_router
+from .job_api import router as job_router
 
 # Create FastAPI app
 app = FastAPI(
-    title="Tiny Media Analysis API",
-    description="A REST API for analyzing news articles with tagging and filtering capabilities",
+    title="Lengau Cluster Job Management API",
+    description="A REST API for managing job submissions on the Lengau cluster at CHPC, with additional media analysis capabilities",
     version="1.0.0"
 )
 
@@ -21,7 +22,8 @@ app.add_middleware(
 )
 
 # Include API routes
-app.include_router(router, prefix="/api/v1")
+app.include_router(media_router, prefix="/api/v1/media", tags=["Media Analysis"])
+app.include_router(job_router, prefix="/api/v1/cluster", tags=["Cluster Management"])
 
 # Serve static files for the dashboard
 if os.path.exists("static"):
@@ -31,11 +33,23 @@ if os.path.exists("static"):
 async def root():
     """Root endpoint with API information."""
     return {
-        "message": "Tiny Media Analysis API",
+        "message": "Lengau Cluster Job Management API",
         "version": "1.0.0",
         "endpoints": {
-            "articles": "/api/v1/articles",
-            "stats": "/api/v1/stats",
+            "media_analysis": {
+                "articles": "/api/v1/media/articles",
+                "stats": "/api/v1/media/stats"
+            },
+            "cluster_management": {
+                "submit_job": "/api/v1/cluster/jobs",
+                "list_jobs": "/api/v1/cluster/jobs",
+                "job_status": "/api/v1/cluster/jobs/{job_id}",
+                "cancel_job": "/api/v1/cluster/jobs/{job_id}",
+                "job_logs": "/api/v1/cluster/jobs/{job_id}/logs",
+                "cluster_info": "/api/v1/cluster/info",
+                "queues": "/api/v1/cluster/queues",
+                "modules": "/api/v1/cluster/modules"
+            },
             "docs": "/docs"
         }
     }

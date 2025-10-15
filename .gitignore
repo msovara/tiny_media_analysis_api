@@ -1,0 +1,84 @@
+# WRF-Chem specific files
+wrfinput_d*
+wrfbdy_d*
+wrfout_d*
+rsl.*
+namelist.output
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Log files
+*.log
+*.out
+*.err
+
+# Large data files
+*.nc
+*.grib
+*.grib2
+
+# Compiled executables
+*.exe
+*.o
+*.mod
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Job output files
+*.pbs.o*
+*.pbs.e*
+
+# Chemistry data (too large for git)
+wrfchemi_d*
+wrffirechemi_d*
+wrfbiochemi_d*
+
+# WPS files
+met_em.d*
+geo_em.d*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,105 @@
+#!/bin/bash
+#PBS -N drought_analysis
+#PBS -q normal
+#PBS -l select=1:ncpus=8:mem=32GB
+#PBS -l walltime=02:00:00
+#PBS -o outputs/drought_analysis.out
+#PBS -e outputs/drought_analysis.err
+#PBS -j oe
+
+# Southern Africa Drought Analysis Job Script
+# This script submits the drought analysis to the Lengau cluster
+
+echo "=========================================="
+echo "Southern Africa Drought Analysis Job"
+echo "=========================================="
+echo "Job ID: $PBS_JOBID"
+echo "Job Name: $PBS_JOBNAME"
+echo "Queue: $PBS_QUEUE"
+echo "Node: $PBS_O_HOST"
+echo "Start Time: $(date)"
+echo "Working Directory: $PBS_O_WORKDIR"
+echo "=========================================="
+
+# Change to the project directory
+cd $PBS_O_WORKDIR
+
+# Load required modules
+echo "Loading required modules..."
+module load chpc/parallel_studio_xe/16.0.1/2016.1.150
+module load chpc/netcdf/4.4.3-F/intel/16.0.1
+module load chpc/hdf5/1.8.16/intel/16.0.1
+module load chpc/python/3.8.0
+
+# Set environment variables
+export OMP_NUM_THREADS=8
+export MKL_NUM_THREADS=8
+
+# Create output directory
+mkdir -p outputs
+
+# Install Python packages if needed
+echo "Checking Python environment..."
+python -c "import numpy, pandas, xarray, matplotlib, cartopy" 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "Installing required Python packages..."
+    pip install --user numpy pandas scipy matplotlib seaborn
+    pip install --user xarray netcdf4 rasterio geopandas shapely
+    pip install --user cartopy pyproj folium plotly
+    pip install --user cftime dask requests tqdm
+fi
+
+# Run the drought analysis
+echo "Starting drought analysis..."
+python figure_2_1_drought_analysis.py
+
+# Check if analysis completed successfully
+if [ $? -eq 0 ]; then
+    echo "=========================================="
+    echo "Drought analysis completed successfully!"
+    echo "End Time: $(date)"
+    echo "=========================================="
+    
+    # List output files
+    echo "Generated files:"
+    ls -la outputs/
+    
+    # Create a summary report
+    cat > outputs/analysis_summary.txt << EOF
+Southern Africa Drought Analysis Summary
+========================================
+Job ID: $PBS_JOBID
+Start Time: $(date)
+End Time: $(date)
+Status: SUCCESS
+
+Generated Files:
+$(ls -la outputs/)
+
+Analysis Details:
+- Region: Southern Africa (-20° to 60°E, -40° to -10°N)
+- Time Period: 2000-2023
+- Drought Indices: SPI (3, 6, 12 months), SPEI (3 months)
+- Thresholds: Moderate (-1.0), Severe (-1.5), Extreme (-2.0)
+- Output Format: PNG maps, HTML interactive map, CSV statistics
+
+Main Output:
+- figure_2_1_main_drought_frequency.png: Main drought frequency map
+- figure_2_1_interactive_map.html: Interactive web map
+EOF
+    
+    echo "Summary report created: outputs/analysis_summary.txt"
+else
+    echo "=========================================="
+    echo "Drought analysis failed!"
+    echo "End Time: $(date)"
+    echo "=========================================="
+    exit 1
+fi
+
+
+
+
+
+
+

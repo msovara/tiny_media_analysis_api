@@ -1,0 +1,98 @@
+#!/bin/bash
+#PBS -N dmi_download
+#PBS -q normal
+#PBS -l select=1:ncpus=1:mem=4GB
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -o logs/dmi_download_${PBS_JOBID}.out
+#PBS -e logs/dmi_download_${PBS_JOBID}.err
+
+# DMI Data Download Job for Lengau Cluster
+# This job downloads DMI data from multiple sources
+
+echo "=========================================="
+echo "DMI DATA DOWNLOAD JOB - LENGAU CLUSTER"
+echo "=========================================="
+echo "Job ID: $PBS_JOBID"
+echo "Job Name: $PBS_JOBNAME"
+echo "Queue: $PBS_QUEUE"
+echo "Node: $PBS_O_HOST"
+echo "Date: $(date)"
+echo "User: $(whoami)"
+echo "Working Directory: $PBS_O_WORKDIR"
+echo "=========================================="
+
+# Change to working directory
+cd $PBS_O_WORKDIR
+
+# Create logs directory
+mkdir -p logs
+
+# Load required modules
+echo "Loading modules..."
+module load python/3.8.5
+module load gcc/9.3.0
+
+# Set up environment
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+export OMP_NUM_THREADS=1
+
+# Create necessary directories
+echo "Creating directories..."
+mkdir -p data/iod
+mkdir -p output/processed
+mkdir -p output/plots
+mkdir -p logs
+
+# Make the download script executable
+chmod +x download_dmi_lengau.sh
+
+# Run the DMI download script
+echo "Starting DMI data download..."
+./download_dmi_lengau.sh
+
+# Check if download was successful
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "=========================================="
+    echo "DMI DOWNLOAD JOB COMPLETED SUCCESSFULLY"
+    echo "=========================================="
+    echo "Job ID: $PBS_JOBID"
+    echo "Completion time: $(date)"
+    echo ""
+    echo "Output files:"
+    echo "  Data directory: $(ls -la data/iod/)"
+    echo "  Processed files: $(ls -la output/processed/)"
+    echo "  Log files: $(ls -la logs/)"
+    echo "=========================================="
+else
+    echo ""
+    echo "=========================================="
+    echo "DMI DOWNLOAD JOB FAILED"
+    echo "=========================================="
+    echo "Job ID: $PBS_JOBID"
+    echo "Failure time: $(date)"
+    echo "Check log files for details:"
+    echo "  Output: logs/dmi_download_${PBS_JOBID}.out"
+    echo "  Error: logs/dmi_download_${PBS_JOBID}.err"
+    echo "=========================================="
+    exit 1
+fi
+
+echo "Job completed at $(date)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

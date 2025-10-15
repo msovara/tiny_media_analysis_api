@@ -1,0 +1,44 @@
+# Requirements for IOD-Drought Correlation Analysis Script
+# Author: Mthetho Sovara
+# Date: June 2025
+
+# Core scientific computing
+numpy>=1.24.0
+pandas>=2.1.0
+scipy>=1.11.0
+
+# Climate and geospatial data handling
+xarray>=2023.12.0
+netcdf4>=1.6.5
+
+# Statistical analysis
+statsmodels>=0.14.0
+
+# Visualization and mapping
+matplotlib>=3.8.0
+cartopy>=0.22.0
+
+# Optional: Enhanced visualization
+seaborn>=0.13.0
+
+# System utilities (built-in, no installation needed)
+# os
+# warnings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

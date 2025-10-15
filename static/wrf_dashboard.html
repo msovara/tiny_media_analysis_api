@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WRF API Dashboard - Lengau Cluster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #ecf0f1;
+            padding: 15px 30px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        .nav button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav button:hover {
+            background: #2980b9;
+        }
+
+        .nav button.active {
+            background: #2c3e50;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #229954;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .job-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .job-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+        }
+
+        .job-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .job-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-running { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-failed { background: #f8d7da; color: #721c24; }
+        .status-pending { background: #d1ecf1; color: #0c5460; }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .json-display {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌤️ WRF API Dashboard</h1>
+            <p>Weather Research and Forecasting - Lengau Cluster</p>
+        </div>
+
+        <div class="nav">
+            <button onclick="showSection('info')" class="active">📊 System Info</button>
+            <button onclick="showSection('submit')">🚀 Submit Job</button>
+            <button onclick="showSection('jobs')">📋 Job List</button>
+            <button onclick="showSection('templates')">📄 Templates</button>
+            <button onclick="showSection('docs')">📖 API Docs</button>
+        </div>
+
+        <div class="content">
+            <!-- System Info Section -->
+            <div id="info" class="section active">
+                <h2>System Information</h2>
+                <div class="card">
+                    <div id="system-info" class="loading">
+                        <div class="spinner"></div>
+                        Loading system information...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Job Section -->
+            <div id="submit" class="section">
+                <h2>Submit WRF Job</h2>
+                <div class="card">
+                    <form id="job-form">
+                        <div class="form-group">
+                            <label for="job-name">Job Name:</label>
+                            <input type="text" id="job-name" required placeholder="my_wrf_simulation">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="queue">Queue:</label>
+                            <select id="queue" required>
+                                <option value="normal">normal</option>
+                                <option value="long">long</option>
+                                <option value="short">short</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nodes">Number of Nodes:</label>
+                            <input type="number" id="nodes" min="1" max="10" value="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cores">Cores per Node:</label>
+                            <input type="number" id="cores" min="1" max="32" value="8" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="walltime">Wall Time (HH:MM:SS):</label>
+                            <input type="text" id="walltime" value="02:00:00" required pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="domain">Domain:</label>
+                            <select id="domain" required>
+                                <option value="south_africa">South Africa</option>
+                                <option value="local">Local</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resolution">Resolution:</label>
+                            <select id="resolution" required>
+                                <option value="12km">12km</option>
+                                <option value="6km">6km</option>
+                                <option value="3km">3km</option>
+                                <option value="1km">1km</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="simulation-days">Simulation Days:</label>
+                            <input type="number" id="simulation-days" min="1" max="30" value="3" required>
+                        </div>
+
+                        <button type="submit" class="btn">Submit Job</button>
+                    </form>
+                    <div id="submit-result"></div>
+                </div>
+            </div>
+
+            <!-- Job List Section -->
+            <div id="jobs" class="section">
+                <h2>Job Management</h2>
+                <div class="card">
+                    <button onclick="loadJobs()" class="btn">🔄 Refresh Jobs</button>
+                    <div id="job-list" class="job-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading jobs...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Section -->
+            <div id="templates" class="section">
+                <h2>Namelist Templates</h2>
+                <div class="card">
+                    <button onclick="loadWRFTemplate()" class="btn">📄 WRF Namelist</button>
+                    <button onclick="loadWPSTemplate()" class="btn btn-secondary">📄 WPS Namelist</button>
+                    <div id="template-content" class="json-display" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- API Docs Section -->
+            <div id="docs" class="section">
+                <h2>API Documentation</h2>
+                <div class="card">
+                    <p>Interactive API documentation is available at:</p>
+                    <a href="/docs" target="_blank" class="btn">📖 Open Swagger UI</a>
+                    <a href="/redoc" target="_blank" class="btn btn-secondary">📖 Open ReDoc</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/v1/wrf';
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Load data for specific sections
+            if (sectionId === 'info') {
+                loadSystemInfo();
+            } else if (sectionId === 'jobs') {
+                loadJobs();
+            }
+        }
+
+        // Load system information
+        async function loadSystemInfo() {
+            try {
+                const response = await fetch(`${API_BASE}/info`);
+                const data = await response.json();
+                
+                document.getElementById('system-info').innerHTML = `
+                    <h3>WRF Installation</h3>
+                    <p><strong>Version:</strong> ${data.wrf_version || 'N/A'}</p>
+                    <p><strong>Path:</strong> ${data.wrf_path || 'N/A'}</p>
+                    <p><strong>Status:</strong> <span class="status success">✅ Available</span></p>
+                    
+                    <h3>Available Executables</h3>
+                    <ul>
+                        ${(data.executables || []).map(exe => `<li>${exe}</li>`).join('')}
+                    </ul>
+                    
+                    <h3>Default Modules</h3>
+                    <ul>
+                        ${(data.modules || []).map(module => `<li>${module}</li>`).join('')}
+                    </ul>
+                `;
+            } catch (error) {
+                document.getElementById('system-info').innerHTML = `
+                    <div class="status error">❌ Error loading system information: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Submit job
+        document.getElementById('job-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                job_name: document.getElementById('job-name').value,
+                queue: document.getElementById('queue').value,
+                nodes: parseInt(document.getElementById('nodes').value),
+                cores_per_node: parseInt(document.getElementById('cores').value),
+                walltime: document.getElementById('walltime').value,
+                wrf_config: {
+                    domain: document.getElementById('domain').value,
+                    resolution: document.getElementById('resolution').value,
+                    simulation_days: parseInt(document.getElementById('simulation-days').value)
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/jobs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('submit-result').innerHTML = `
+                        <div class="status success">
+                            ✅ Job submitted successfully!<br>
+                            Job ID: ${result.job_id || 'N/A'}<br>
+                            Status: ${result.status || 'N/A'}
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('submit-result').innerHTML = `
+                        <div class="status error">
+                            ❌ Job submission failed: ${result.detail || result.error || 'Unknown error'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('submit-result').innerHTML = `
+                    <div class="status error">
+                        ❌ Error submitting job: ${error.message}
+                    </div>
+                `;
+            }
+        });
+
+        // Load jobs
+        async function loadJobs() {
+            try {
+                const response = await fetch(`${API_BASE}/jobs`);
+                const data = await response.json();
+                
+                if (data.jobs && data.jobs.length > 0) {
+                    const jobList = data.jobs.map(job => `
+                        <div class="job-item" onclick="showJobDetails('${job.job_id}')">
+                            <h4>${job.job_name}</h4>
+                            <p><strong>ID:</strong> ${job.job_id}</p>
+                            <p><strong>Status:</strong> <span class="job-status status-${job.status.toLowerCase()}">${job.status}</span></p>
+                            <p><strong>Queue:</strong> ${job.queue}</p>
+                            <p><strong>Nodes:</strong> ${job.nodes}</p>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('job-list').innerHTML = jobList;
+                } else {
+                    document.getElementById('job-list').innerHTML = `
+                        <div class="status info">No WRF jobs found</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('job-list').innerHTML = `
+                    <div class="status error">❌ Error loading jobs: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Show job details
+        async function showJobDetails(jobId) {
+            try {
+                const response = await fetch(`${API_BASE}/jobs/${jobId}`);
+                const job = await response.json();
+                
+                alert(`
+Job Details:
+- ID: ${job.job_id}
+- Name: ${job.job_name}
+- Status: ${job.status}
+- Queue: ${job.queue}
+- Nodes: ${job.nodes}
+- Cores: ${job.cores_per_node}
+- Wall Time: ${job.walltime}
+                `);
+            } catch (error) {
+                alert(`Error loading job details: ${error.message}`);
+            }
+        }
+
+        // Load WRF template
+        async function loadWRFTemplate() {
+            try {
+                const response = await fetch(`${API_BASE}/templates/namelist`);
+                const data = await response.json();
+                
+                document.getElementById('template-content').style.display = 'block';
+                document.getElementById('template-content').textContent = data.template_content;
+            } catch (error) {
+                alert(`Error loading WRF template: ${error.message}`);
+            }
+        }
+
+        // Load WPS template
+        async function loadWPSTemplate() {
+            try {
+                const response = await fetch(`${API_BASE}/templates/wps-namelist`);
+                const data = await response.json();
+                
+                document.getElementById('template-content').style.display = 'block';
+                document.getElementById('template-content').textContent = data.template_content;
+            } catch (error) {
+                alert(`Error loading WPS template: ${error.message}`);
+            }
+        }
+
+        // Load initial data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemInfo();
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
